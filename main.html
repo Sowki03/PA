@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4051b5",
+                        "primary-dark": "#1a237e",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#14161e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-2">
+<div class="bg-primary p-2 rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl">record_voice_over</span>
+</div>
+<span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">Voxa</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<div class="size-10 rounded-full border-2 border-primary/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile avatar showing a smiling person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmhz7AORoEkEOC4TdVkxtFAmEhreBLzZIfJMaLaidWof4PcukqfgVRwKl2Ihjn0IQOMth7IbgPzFkwPGzScJGsUC05irOl2wKi2q51OImO_wXhDRHebv2Lqr0qnwO77zxWwTq_TwuQyWLVK1rftie1QU0fB9piSIq2dBObGjgp39w2bByCHXUWIVVHT9aHBNJud5fl_GgG6k0WNfszLlWYXa94CYEZKLg7gEVMlGIzfb_3KAqfuiUQQLtxYIZVQQfSrWJBaaghctXi"/>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col gap-6 p-4 max-w-md mx-auto w-full">
+<!-- Active Chat Window -->
+<section class="flex flex-col gap-4 bg-white dark:bg-slate-900/50 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between border-b border-slate-50 dark:border-slate-800 pb-2">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Live Transcript</span>
+<span class="size-2 bg-green-500 rounded-full animate-pulse"></span>
+</div>
+<div class="space-y-4">
+<!-- User Bubble -->
+<div class="flex flex-col items-end gap-1">
+<div class="bg-primary-dark text-white px-4 py-2.5 rounded-xl rounded-tr-none max-w-[85%] shadow-sm">
+<p class="text-sm">Set a reminder for my meeting.</p>
+</div>
+<span class="text-[10px] text-slate-400 px-1">10:42 AM</span>
+</div>
+<!-- AI Bubble -->
+<div class="flex flex-col items-start gap-1">
+<div class="bg-[#F5F5F5] dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-4 py-2.5 rounded-xl rounded-tl-none max-w-[85%] shadow-sm">
+<p class="text-sm">Meeting reminder set for 4:00 PM.</p>
+</div>
+<div class="flex items-center gap-1 px-1">
+<span class="material-symbols-outlined text-[12px] text-primary">auto_awesome</span>
+<span class="text-[10px] text-slate-400">Voxa AI</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Smart List Section -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Smart List</h2>
+<button class="text-primary text-sm font-semibold">See all</button>
+</div>
+<!-- Task Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="space-y-1">
+<h3 class="font-bold text-slate-900 dark:text-white leading-tight">Project Presentation Preparation</h3>
+<div class="flex items-center gap-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">sync</span>
+                                GOOGLE CALENDAR
+                            </span>
+</div>
+</div>
+<div class="text-slate-400">
+<span class="material-symbols-outlined">more_vert</span>
+</div>
+</div>
+<ul class="space-y-2.5 mb-4">
+<li class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-primary text-xl">check_box</span>
+<span class="text-sm line-through opacity-60">Draft slides</span>
+</li>
+<li class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 text-xl">check_box_outline_blank</span>
+<span class="text-sm">Review data</span>
+</li>
+<li class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 text-xl">check_box_outline_blank</span>
+<span class="text-sm">Practice speech</span>
+</li>
+</ul>
+<div class="flex items-center gap-2 text-primary font-medium text-xs bg-primary/5 p-2 rounded-lg">
+<span class="material-symbols-outlined text-sm">alarm</span>
+<span>Rings at 4:00 PM</span>
+</div>
+</div>
+<!-- Secondary Task Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 opacity-80">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="bg-slate-100 dark:bg-slate-800 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-500">shopping_cart</span>
+</div>
+<div>
+<h3 class="font-semibold text-slate-900 dark:text-white">Weekly Groceries</h3>
+<p class="text-xs text-slate-400">5 items remaining</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Hero Voice Section -->
+<section class="mt-auto pt-10 pb-24 relative flex flex-col items-center">
+<!-- Waveform Effect -->
+<div class="absolute bottom-10 inset-x-0 flex justify-center items-center pointer-events-none">
+<div class="size-48 bg-primary/10 rounded-full blur-2xl animate-pulse"></div>
+<div class="absolute size-32 bg-primary/20 rounded-full blur-xl animate-ping"></div>
+</div>
+<button class="relative z-10 size-24 bg-primary hover:bg-primary-dark text-white rounded-full shadow-2xl shadow-primary/40 flex flex-col items-center justify-center transition-all active:scale-95">
+<span class="material-symbols-outlined text-4xl mb-1">mic</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Tap</span>
+</button>
+<p class="mt-4 text-slate-500 dark:text-slate-400 font-medium text-sm animate-bounce">Tap to Speak</p>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed right-6 bottom-24 size-14 bg-primary text-white rounded-xl shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800 px-6 py-3 z-50">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-[1]">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span class="text-[10px] font-medium">Tasks</span>
+</a>
+<div class="size-8"></div> <!-- Spacer for Mic center -->
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px] font-medium">Schedule</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+</nav>
+<style>
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.1); }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 3s ease-in-out infinite;
+        }
+        /* Custom scrollbar for chat feel */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+    </style>
+</body></html>

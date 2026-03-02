@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Productivity Insights</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4051b5",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#14161e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-primary/10">
+<button class="size-10 flex items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-slate-700 dark:text-slate-300">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Insights</h1>
+<button class="size-10 flex items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-slate-700 dark:text-slate-300">share</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+<!-- Predicted Peak Card -->
+<section class="bg-primary text-white p-5 rounded-xl shadow-lg shadow-primary/20 flex items-center gap-4">
+<div class="bg-white/20 p-3 rounded-lg">
+<span class="material-symbols-outlined text-2xl">bolt</span>
+</div>
+<div>
+<p class="text-sm font-medium opacity-90">Predicted Peak</p>
+<h3 class="text-xl font-bold">10 AM — 12 PM</h3>
+<p class="text-xs mt-1 opacity-80">Your focus is 40% higher in this window.</p>
+</div>
+</section>
+<!-- Weekly Focus Heatmap -->
+<section class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-primary/5 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-base font-bold">Weekly Focus Heatmap</h2>
+<span class="material-symbols-outlined text-slate-400">info</span>
+</div>
+<div class="space-y-4">
+<!-- Grid Labels (Days) -->
+<div class="grid grid-cols-7 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+<!-- Heatmap Blocks (Simplified 4x7 grid for UI purposes) -->
+<div class="heatmap-grid">
+<!-- Column 1 -->
+<div class="space-y-1"><div class="aspect-square rounded-sm bg-primary/10"></div><div class="aspect-square rounded-sm bg-primary/40"></div><div class="aspect-square rounded-sm bg-primary/80"></div><div class="aspect-square rounded-sm bg-primary/20"></div></div>
+<!-- Column 2 -->
+<div class="space-y-1"><div class="aspect-square rounded-sm bg-primary/20"></div><div class="aspect-square rounded-sm bg-primary/60"></div><div class="aspect-square rounded-sm bg-primary/90"></div><div class="aspect-square rounded-sm bg-primary/30"></div></div>
+<!-- Column 3 -->
+<div class="space-y-1"><div class="aspect-square rounded-sm bg-primary/10"></div><div class="aspect-square rounded-sm bg-primary/30"></div><div class="aspect-square rounded-sm bg-primary/60"></div><div class="aspect-square rounded-sm bg-primary/10"></div></div>
+<!-- Column 4 -->
+<div class="space-y-1"><div class="aspect-square rounded-sm bg-primary/50"></div><div class="aspect-square rounded-sm bg-primary/90"></div><div class="aspect-square rounded-sm bg-primary/70"></div><div class="aspect-square rounded-sm bg-primary/40"></div></div>
+<!-- Column 5 -->
+<div class="space-y-1"><div class="aspect-square rounded-sm bg-primary/30"></div><div class="aspect-square rounded-sm bg-primary/60"></div><div class="aspect-square rounded-sm bg-primary/80"></div><div class="aspect-square rounded-sm bg-primary/20"></div></div>
+<!-- Column 6 -->
+<div class="space-y-1"><div class="aspect-square rounded-sm bg-primary/5"></div><div class="aspect-square rounded-sm bg-primary/10"></div><div class="aspect-square rounded-sm bg-primary/10"></div><div class="aspect-square rounded-sm bg-primary/5"></div></div>
+<!-- Column 7 -->
+<div class="space-y-1"><div class="aspect-square rounded-sm bg-primary/10"></div><div class="aspect-square rounded-sm bg-primary/5"></div><div class="aspect-square rounded-sm bg-primary/5"></div><div class="aspect-square rounded-sm bg-primary/10"></div></div>
+</div>
+<div class="flex items-center justify-center gap-3 pt-2">
+<span class="text-[10px] text-slate-400 font-medium">Low Intensity</span>
+<div class="flex gap-1">
+<div class="size-3 rounded-sm bg-primary/10"></div>
+<div class="size-3 rounded-sm bg-primary/40"></div>
+<div class="size-3 rounded-sm bg-primary/70"></div>
+<div class="size-3 rounded-sm bg-primary"></div>
+</div>
+<span class="text-[10px] text-slate-400 font-medium">High Intensity</span>
+</div>
+</div>
+</section>
+<!-- Task Distribution -->
+<section class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-primary/5 shadow-sm">
+<h2 class="text-base font-bold mb-4">Task Distribution</h2>
+<div class="flex items-center gap-8">
+<!-- Donut Chart Representation -->
+<div class="relative size-32 shrink-0">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-slate-100 dark:stroke-slate-800" cx="18" cy="18" fill="none" r="16" stroke-width="4"></circle>
+<circle class="stroke-primary" cx="18" cy="18" fill="none" r="16" stroke-dasharray="60, 100" stroke-linecap="round" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="none" r="16" stroke="#818cf8" stroke-dasharray="25, 100" stroke-dashoffset="-60" stroke-linecap="round" stroke-width="4"></circle>
+<circle cx="18" cy="18" fill="none" r="16" stroke="#c7d2fe" stroke-dasharray="15, 100" stroke-dashoffset="-85" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-xl font-bold">142</span>
+<span class="text-[10px] text-slate-400 font-medium uppercase">Tasks</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex-1 space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-primary"></div>
+<span class="text-sm text-slate-600 dark:text-slate-400">Work</span>
+</div>
+<span class="text-sm font-bold">60%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-[#818cf8]"></div>
+<span class="text-sm text-slate-600 dark:text-slate-400">Personal</span>
+</div>
+<span class="text-sm font-bold">25%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-[#c7d2fe]"></div>
+<span class="text-sm text-slate-600 dark:text-slate-400">Health</span>
+</div>
+<span class="text-sm font-bold">15%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Productivity Summary (Optional addition for balance) -->
+<section class="grid grid-cols-2 gap-4">
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-primary/5 shadow-sm">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Focus Score</p>
+<div class="flex items-end gap-1">
+<span class="text-2xl font-bold">84</span>
+<span class="text-green-500 text-xs font-bold mb-1">↑ 12%</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-primary/5 shadow-sm">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Avg Session</p>
+<div class="flex items-end gap-1">
+<span class="text-2xl font-bold">45m</span>
+<span class="text-slate-400 text-xs font-bold mb-1">Steady</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 pb-6 pt-2 px-4 flex justify-around items-end relative sticky bottom-0 z-20">
+<!-- Home -->
+<a class="flex flex-col items-center gap-1 group text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+</a>
+<!-- Tasks -->
+<a class="flex flex-col items-center gap-1 group text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">task_alt</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Tasks</span>
+</a>
+<!-- Voice (FAB) -->
+<div class="relative flex flex-col items-center">
+<button class="size-14 -top-8 absolute rounded-full bg-primary text-white shadow-lg shadow-primary/40 flex items-center justify-center border-4 border-background-light dark:border-background-dark active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-2xl">mic</span>
+</button>
+<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter mt-8">Voice</span>
+</div>
+<!-- Insights (Active) -->
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<div class="bg-primary/10 px-4 py-1 rounded-full">
+<span class="material-symbols-outlined fill-1">insights</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Insights</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center gap-1 group text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Settings</span>
+</a>
+</nav>
+</body></html>
