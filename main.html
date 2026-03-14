@@ -8,27 +8,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#4051b5",
-                        "primary-dark": "#1a237e",
-                        "background-light": "#f6f6f8",
-                        "background-dark": "#14161e",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem",
-                        "lg": "1rem",
-                        "xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                },
-            },
+        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+
+        // 1. Initialize the AI model (Do this once)
+        let transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny');
+
+        // 2. Audio Capture Variables
+        let mediaRecorder;
+        let audioChunks = [];
+
+        async function startTranscription() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const arrayBuffer = await audioBlob.arrayBuffer();
+                
+                // 3. Process the audio
+                const output = await transcriber(new Float32Array(arrayBuffer));
+                
+                // This is your variable!
+                const finalTranscription = output.text;
+                console.log("Transcribed Text:", finalTranscription);
+                
+                // Update your UI
+                document.getElementById('transcript-display').innerText = finalTranscription;
+                audioChunks = [];
+            };
+
+            mediaRecorder.start();
         }
     </script>
 <style>
@@ -204,3 +217,4 @@
         }
     </style>
 </body></html>
+

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .recording-pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+        .bg-primary {
+            background-color: #6366f1;
+        }
+        .text-primary {
+            color: #6366f1;
+        }
+        .bg-primary-dark {
+            background-color: #4f46e5;
+        }
+        .hover\:bg-primary-dark:hover {
+            background-color: #4338ca;
+        }
+        .shadow-primary\/40 {
+            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4),
+                        0 10px 10px -5px rgba(99, 102, 241, 0.2);
+        }
+        .bg-primary\/10 {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+        .bg-primary\/20 {
+            background-color: rgba(99, 102, 241, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 font-display text-slate-900 dark:text-slate-100">
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div class="flex items-center gap-2">
+            <div class="bg-primary p-2 rounded-lg text-white">
+                <span class="material-symbols-outlined text-2xl">record_voice_over</span>
+            </div>
+            <span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">Voxa</span>
+        </div>
+        <button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400" onclick="document.documentElement.classList.toggle('dark')">
+            <span class="material-symbols-outlined">dark_mode</span>
+        </button>
+    </header>
+
+    <main class="flex-1 flex flex-col gap-8 p-6 max-w-2xl mx-auto w-full">
+        <!-- Live Transcript Section -->
+        <section class="flex flex-col gap-4 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-gray-700">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-gray-700 pb-3">
+                <span class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Live Transcript</span>
+                <span id="recording-indicator" class="size-2.5 bg-slate-300 rounded-full"></span>
+            </div>
+            <div id="transcript-container" class="space-y-4 min-h-[300px] max-h-[500px] overflow-y-auto">
+                <div class="flex items-center justify-center h-64 text-slate-400 text-sm">
+                    <p>Press the microphone to start speaking...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Microphone Button Section -->
+        <section class="flex flex-col items-center gap-6 py-8">
+            <!-- Waveform Effect -->
+            <div id="waveform-effect" class="absolute inset-0 flex justify-center items-center pointer-events-none opacity-0 transition-opacity duration-300">
+                <div class="size-64 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute size-48 bg-primary/20 rounded-full blur-2xl animate-ping"></div>
+            </div>
+            
+            <button id="mic-button" class="relative z-10 size-28 bg-primary hover:bg-primary-dark text-white rounded-full shadow-2xl shadow-primary/40 flex flex-col items-center justify-center transition-all active:scale-95 hover:scale-105">
+                <span class="material-symbols-outlined text-5xl mb-1">mic</span>
+                <span class="text-[11px] font-bold uppercase tracking-widest">Tap</span>
+            </button>
+            
+            <p id="mic-status" class="text-slate-600 dark:text-slate-400 font-medium text-base">Tap to Speak</p>
+        </section>
+    </main>
+
+    <script>
+        // ==============================================
+        // WEB SPEECH API - FREE BROWSER-BASED TRANSCRIPTION
+        // ==============================================
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (!SpeechRecognition) {
+            alert('Speech Recognition not supported. Please use Chrome or Edge browser.');
+        }
+
+        // ======================
+        // CONFIGURATION
+        // ======================
+        let recognition = null;
+        let isRecording = false;
+        
+        // THIS IS YOUR FINAL VARIABLE - Use this for prompt calls!
+        let fullTranscription = "";
+        
+        // Store all speech in one continuous session
+        let currentSessionText = "";
+        let lastInterimBubble = null;
+        let lastFinalIndex = 0; // Track what we've already processed
+
+        // ======================
+        // UI ELEMENTS
+        // ======================
+        const micButton = document.getElementById('mic-button');
+        const micStatus = document.getElementById('mic-status');
+        const recordingIndicator = document.getElementById('recording-indicator');
+        const waveformEffect = document.getElementById('waveform-effect');
+        const transcriptContainer = document.getElementById('transcript-container');
+
+        // ======================
+        // INITIALIZE SPEECH RECOGNITION
+        // ======================
+        function initializeSpeechRecognition() {
+            if (!SpeechRecognition) return;
+
+            recognition = new SpeechRecognition();
+            
+            // Configuration
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'ml-IN';
+            recognition.maxAlternatives = 1;
+
+            // Event: Recognition starts
+            recognition.onstart = () => {
+                console.log('🎤 Speech recognition started');
+                isRecording = true;
+                updateRecordingUI(true);
+                currentSessionText = "";
+                lastInterimBubble = null;
+                lastFinalIndex = 0;
+            };
+
+            // Event: Recognition ends
+            recognition.onend = () => {
+                console.log('🔄 Speech recognition ended');
+                
+                if (isRecording) {
+                    console.log('🔄 Auto-restarting recognition...');
+                    try {
+                        setTimeout(() => {
+                            if (isRecording) {
+                                recognition.start();
+                            }
+                        }, 100);
+                    } catch (e) {
+                        console.log('Recognition restart failed:', e);
+                    }
+                } else {
+                    updateRecordingUI(false);
+                    finalizeTranscription();
+                }
+            };
+
+            // Event: Results received (REAL-TIME!)
+            recognition.onresult = (event) => {
+                let interimText = "";
+                let newFinalText = "";
+                
+                // Process only NEW results (from lastFinalIndex onwards)
+                for (let i = lastFinalIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    
+                    if (event.results[i].isFinal) {
+                        newFinalText += transcript + " ";
+                        lastFinalIndex = i + 1;
+                        console.log('✅ New final text:', transcript);
+                    } else {
+                        interimText += transcript;
+                    }
+                }
+                
+                // Add only NEW final text to session
+                if (newFinalText.trim()) {
+                    currentSessionText += newFinalText;
+                    console.log('📝 Session now contains:', currentSessionText.length, 'characters');
+                }
+                
+                // Update the bubble with current session + any interim text
+                updateLiveBubble(currentSessionText + interimText);
+            };
+
+            // Event: Errors
+            recognition.onerror = (event) => {
+                console.error('❌ Speech recognition error:', event.error);
+                
+                if (event.error === 'no-speech') {
+                    console.log('No speech detected, continuing...');
+                } else if (event.error === 'aborted') {
+                    console.log('Recognition aborted');
+                } else if (event.error === 'network') {
+                    console.log('Network error, will retry...');
+                } else {
+                    console.log(`Error: ${event.error}, continuing...`);
+                }
+                
+                if (isRecording && event.error !== 'aborted') {
+                    setTimeout(() => {
+                        if (isRecording) {
+                            try {
+                                recognition.start();
+                            } catch (e) {
+                                console.log('Could not restart:', e);
+                            }
+                        }
+                    }, 500);
+                }
+            };
+
+            console.log('✅ Speech Recognition initialized');
+        }
+
+        // ======================
+        // UI UPDATE FUNCTIONS
+        // ======================
+        function updateRecordingUI(recording) {
+            if (recording) {
+                recordingIndicator.className = 'size-2.5 bg-green-500 rounded-full animate-pulse';
+                micButton.classList.add('recording-pulse');
+                waveformEffect.classList.remove('opacity-0');
+                waveformEffect.classList.add('opacity-100');
+                micStatus.textContent = 'Listening... Speak now!';
+            } else {
+                recordingIndicator.className = 'size-2.5 bg-slate-300 rounded-full';
+                micButton.classList.remove('recording-pulse');
+                waveformEffect.classList.remove('opacity-100');
+                waveformEffect.classList.add('opacity-0');
+                micStatus.textContent = 'Tap to Speak';
+            }
+        }
+
+        function updateLiveBubble(text) {
+            const placeholder = transcriptContainer.querySelector('p');
+            if (placeholder?.textContent.includes('Press the microphone')) {
+                transcriptContainer.innerHTML = '';
+            }
+
+            if (!text.trim()) return;
+
+            const timestamp = new Date().toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            if (lastInterimBubble) {
+                lastInterimBubble.remove();
+            }
+
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'flex flex-col items-end gap-2';
+            bubbleDiv.innerHTML = `
+                <div class="bg-primary-dark text-white px-5 py-3 rounded-2xl rounded-tr-none max-w-[90%] shadow-md">
+                    <p class="text-base leading-relaxed">${text}</p>
+                </div>
+                <span class="text-xs text-slate-400 px-2">${timestamp} <span class="animate-pulse">●</span> speaking...</span>
+            `;
+
+            lastInterimBubble = bubbleDiv;
+            transcriptContainer.appendChild(bubbleDiv);
+            transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
+        }
+
+        function finalizeBubble() {
+            if (lastInterimBubble && currentSessionText.trim()) {
+                const timestamp = new Date().toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+
+                lastInterimBubble.innerHTML = `
+                    <div class="bg-primary-dark text-white px-5 py-3 rounded-2xl rounded-tr-none max-w-[90%] shadow-md">
+                        <p class="text-base leading-relaxed">${currentSessionText.trim()}</p>
+                    </div>
+                    <span class="text-xs text-slate-400 px-2">${timestamp}</span>
+                `;
+                lastInterimBubble = null;
+            }
+        }
+
+        // ======================
+        // RECORDING CONTROLS
+        // ======================
+        function startRecording() {
+            if (!recognition) {
+                alert('Speech recognition not initialized. Please reload the page.');
+                return;
+            }
+
+            try {
+                currentSessionText = "";
+                fullTranscription = "";
+                lastInterimBubble = null;
+                lastFinalIndex = 0;
+                
+                transcriptContainer.innerHTML = '';
+                
+                recognition.start();
+                console.log('🎤 Recording started - Tap again to stop');
+            } catch (error) {
+                console.error('Error starting recognition:', error);
+                if (error.message.includes('already started')) {
+                    console.log('Recognition already running');
+                } else {
+                    alert('Could not start recording: ' + error.message);
+                }
+            }
+        }
+
+        function stopRecording() {
+            if (!recognition || !isRecording) return;
+
+            console.log('🛑 Stopping recording...');
+            isRecording = false;
+            
+            try {
+                recognition.stop();
+                finalizeBubble();
+            } catch (error) {
+                console.error('Error stopping recognition:', error);
+            }
+        }
+
+        function finalizeTranscription() {
+            fullTranscription = currentSessionText.trim();
+            
+            console.log('✅ Recording complete!');
+            console.log('📄 FULL TRANSCRIPTION:', fullTranscription);
+            console.log('🎯 Variable ready for prompt calls!');
+            console.log('📏 Length:', fullTranscription.length, 'characters');
+
+            micStatus.textContent = 'Tap to Speak';
+
+            if (fullTranscription) {
+                handleTranscriptionComplete(fullTranscription);
+            }
+        }
+
+        // ======================
+        // HANDLE COMPLETED TRANSCRIPTION
+        // ======================
+        async function handleTranscriptionComplete(transcription) {
+            console.log('🚀 Ready to send to AI:', transcription);
+            
+            // THIS IS WHERE YOU'LL MAKE YOUR API/PROMPT CALLS
+            // The transcription variable contains all the spoken text
+            
+            // Example: Show AI response
+            setTimeout(() => {
+                addAIResponse(`Got it! You said: "${transcription.substring(0, 100)}${transcription.length > 100 ? '...' : ''}"`);
+            }, 500);
+        }
+
+        function addAIResponse(text) {
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'flex flex-col items-start gap-2';
+            bubbleDiv.innerHTML = `
+                <div class="bg-gray-100 dark:bg-gray-700 text-slate-900 dark:text-slate-100 px-5 py-3 rounded-2xl rounded-tl-none max-w-[90%] shadow-md">
+                    <p class="text-base leading-relaxed">${text}</p>
+                </div>
+                <div class="flex items-center gap-1 px-2">
+                    <span class="material-symbols-outlined text-sm text-primary">auto_awesome</span>
+                    <span class="text-xs text-slate-400">Voxa AI</span>
+                </div>
+            `;
+            transcriptContainer.appendChild(bubbleDiv);
+            transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
+        }
+
+        // ======================
+        // EVENT LISTENERS
+        // ======================
+        micButton.addEventListener('click', () => {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        });
+
+        // ======================
+        // INITIALIZE ON LOAD
+        // ======================
+        window.addEventListener('load', () => {
+            initializeSpeechRecognition();
+            micStatus.textContent = 'Ready! Tap to Speak';
+        });
+
+        // ======================
+        // GLOBAL ACCESS (for debugging)
+        // ======================
+        window.getFullTranscription = () => fullTranscription;
+        window.resetTranscription = () => {
+            fullTranscription = "";
+            currentSessionText = "";
+            lastInterimBubble = null;
+            lastFinalIndex = 0;
+            transcriptContainer.innerHTML = `
+                <div class="flex items-center justify-center h-64 text-slate-400 text-sm">
+                    <p>Press the microphone to start speaking...</p>
+                </div>
+            `;
+            console.log('🔄 Transcription reset');
+        };
+    </script>
+</body>
+</html>
